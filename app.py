@@ -198,4 +198,5 @@ mymaps_file = st.file_uploader("Upload My Maps (KML/KMZ)", type=["kml", "kmz"])
 mymaps_places = parse_kml_or_kmz(mymaps_file.getvalue(), mymaps_file.name) if mymaps_file else []
 
 avoid = st.text_area("Areas to avoid", DEFAULT_UNSAFE_AREAS)
-screenshots = st.file_uploader("Upload_
+screenshots = st.file_uploader("Upload screenshots", type=["png", "jpg", "jpeg", "webp"], accept_multiple_files=True)
+
