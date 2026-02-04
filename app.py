@@ -187,6 +187,8 @@ Return schema:
 st.set_page_config(page_title="My Trip Agent", layout="wide")
 st.title("My Trip Agent — Amsterdam")
 st.caption("Screenshots + Google My Maps → smart daily plan")
+run_btn = st.button("✅ Create my plan", type="primary")
+st.divider()
 
 date = st.text_input("Date (YYYY-MM-DD)")
 home = st.text_input("Home / Hotel")
@@ -200,3 +202,29 @@ mymaps_places = parse_kml_or_kmz(mymaps_file.getvalue(), mymaps_file.name) if my
 avoid = st.text_area("Areas to avoid", DEFAULT_UNSAFE_AREAS)
 screenshots = st.file_uploader("Upload screenshots", type=["png", "jpg", "jpeg", "webp"], accept_multiple_files=True)
 
+# -----------------------------
+# Run planner
+# -----------------------------
+if run_btn:
+    if not (date and home and screenshots):
+        st.error("Please fill the date, home/hotel, and upload at least one screenshot.")
+    else:
+        with st.spinner("Creating your smart plan..."):
+            urls = [img_to_data_url(f) for f in screenshots]
+
+            extraction = extract_from_images(urls)
+
+            plans, wake_ams = plan_day(
+                extraction,
+                mymaps_places,
+                date,
+                home,
+                wake,
+                late_by,
+                sleep_late,
+                avoid,
+                "transit"
+            )
+
+            st.success(f"Wake time in Amsterdam: {wake_ams}")
+            st.json(plans)
